@@ -34,7 +34,7 @@ const App: React.FC = () => {
     setLoading(true);
     try {
       const response = await axios.post<AnalysisResponse>(
-        "http://localhost:3000/upload",
+        "https://resume-analyzer-atyj.onrender.com/upload",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
