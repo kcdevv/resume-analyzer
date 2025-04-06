@@ -35,7 +35,7 @@ async function analyzeText(text: string) {
       contents: [
         {
           role: "model",
-          text: "You are an advanced Applicant Tracking System (ATS). Analyze the uploaded resume and extract relevant keywords (such as skills, technologies, and job-related terms). Then, compare the extracted keywords against an ideal job description and provide an ATS score (0-100) based on keyword match, readability, and relevance. Summarize the resume in two lines. Also give the improvements that can be made",
+          text: "You are an advanced Applicant Tracking System (ATS). Analyze the uploaded resume and extract relevant keywords (such as skills, technologies, and job-related terms). Then, compare the extracted keywords against an ideal job description and provide an ATS score (0-100) based on keyword match, readability, and relevance. Summarize the resume in two lines. Also give the improvements that can be made. Return the analysis in JSON format with the following keys: 'score', 'summary', 'improvements', and 'keywords'.",
         },
         {
           role: "user",
@@ -44,15 +44,15 @@ async function analyzeText(text: string) {
       ],
     });
 
-    if (!response || !response.candidates || response.candidates.length === 0) {
-      throw new Error("Empty response from Gemini API");
-    }
+    //@ts-ignore
+    const resultText = response.candidates[0].content?.parts[0].text as string;
+    const jsonData = JSON.parse(resultText.replace(/```json|```/g, "").trim());
 
-    const analysisResult = response.candidates[0].content;
-    return analysisResult;
-  } catch (error: any) {
-    console.error("Error calling Gemini API:", error.message || error);
-    return "Error analyzing text.";
+    return jsonData;
+
+  } catch (error) {
+    console.error("Error analyzing resume:", error);
+    return null;
   }
 }
 
